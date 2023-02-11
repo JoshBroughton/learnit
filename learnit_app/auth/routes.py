@@ -1,6 +1,7 @@
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from learnit_app.extensions import db, bcrypt
+from learnit_app import db
+from learnit_app.extensions import bcrypt
 from learnit_app.models import User
 from learnit_app.auth.forms import SignUpForm, LoginForm
 
@@ -32,3 +33,10 @@ def login():
         next_page = request.args.get('next')
         return redirect(next_page if next_page else url_for('main.homepage'))
     return render_template('login.html', form=form)
+
+@auth.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("Logged out succesfully")
+    return redirect(url_for('main.homepage'))

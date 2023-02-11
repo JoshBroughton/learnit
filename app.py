@@ -1,4 +1,4 @@
-from learnit_app.extensions import app, db
+from learnit_app import app
 from learnit_app.main.routes import main
 from learnit_app.auth.routes import auth
 
