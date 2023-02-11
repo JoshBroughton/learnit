@@ -11,6 +11,3 @@ app.secret_key = os.urandom(24)
 
 # database setup
 db = SQLAlchemy(app)
-
-with app.app_context():
-    db.create_all()
