@@ -2,41 +2,51 @@
   {{ form.csrf_token }}
   <fieldset>
     <legend>Enter the card information:</legend>
-  {{ form.prompt.label }}
-  {{ form.prompt }}
 
-  <ul>
-    {% for error in form.prompt.errors %}
-        <li class="error">{{ error }}</li>
-    {% endfor %}
-  </ul>
+    {{ form.deck.label }}
+    {{ form.deck }}
+    <ul>
+      {% for error in form.deck.errors %}
+          <li class="error">{{ error }}</li>
+      {% endfor %}
+    </ul>
 
-  {{ form.answer_type.label }}
-  {{ form.answer_type }}
 
-  <ul>
-    {% for error in form.answer_type.errors %}
-        <li class="error">{{ error }}</li>
-    {% endfor %}
-  </ul>
+    {{ form.prompt.label }}
+    {{ form.prompt }}
 
-  {{ form.correct_answer.label }}
-  {{ form.correct_answer }}
+    <ul>
+      {% for error in form.prompt.errors %}
+          <li class="error">{{ error }}</li>
+      {% endfor %}
+    </ul>
 
-  <ul>
-    {% for error in form.correct_answer.errors %}
-        <li class="error">{{ error }}</li>
-    {% endfor %}
-  </ul>
+    {{ form.answer_type.label }}
+    {{ form.answer_type }}
 
-  {{ form.explanation.label }} 
-  {{ form.explanation }}
+    <ul>
+      {% for error in form.answer_type.errors %}
+          <li class="error">{{ error }}</li>
+      {% endfor %}
+    </ul>
 
-  <ul>
-    {% for error in form.explanation.errors %}
-        <li class="error">{{ error }}</li>
-    {% endfor %}
-  </ul>
+    {{ form.correct_answer.label }}
+    {{ form.correct_answer }}
+
+    <ul>
+      {% for error in form.correct_answer.errors %}
+          <li class="error">{{ error }}</li>
+      {% endfor %}
+    </ul>
+
+    {{ form.explanation.label }} 
+    {{ form.explanation }}
+
+    <ul>
+      {% for error in form.explanation.errors %}
+          <li class="error">{{ error }}</li>
+      {% endfor %}
+    </ul>
   </fieldset>
 
   {{ form.submit }}

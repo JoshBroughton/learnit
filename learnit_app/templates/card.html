@@ -3,11 +3,19 @@
 
 <h1>Card Details</h1>
 
+<h3> Prompt </h3>
 <p> {{ card.prompt }}</p>
 
-<p> {{ card.anser_type }}</p>
+<h3> Answer Type </h3>
+<p> {{ card.answer_type.value }}</p>
 
+<h3> Correct Answer </h3>
 <p> {{ card.correct_answer }}</p>
 
+<h3> Explanation </h3>
 <p> {{ card.explanation }}</p>
+
+<h2>Update Card Details</h2>
+
+{% include 'create_card_form.html' %}
 {% endblock %}

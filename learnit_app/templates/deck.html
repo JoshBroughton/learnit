@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Deck Details</h1>
+
+<h3> Name </h3>
+<p> {{ deck.name}}</p>
+
+<h3> Cards </h3>
+
+{% for card in deck.cards %}
+  {{ card }}
+{% endfor %}
+
+<h3> Update Deck </h3>
+{% include 'deck_form.html' %}
+{% endblock %}

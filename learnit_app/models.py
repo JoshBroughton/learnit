@@ -28,7 +28,12 @@ class Card(db.Model):
 class Deck(db.Model):
     __tablename__ = "deck_table"
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
     cards = db.relationship("Card")
+    subscribers = db.relationship('User', secondary='subscriptions', back_populates='subscribed_to')
+
+    def __str__(self):
+        return f'{self.name}'
 
 class User(UserMixin, db.Model):
     __tablename__ = "user_table"
@@ -37,5 +42,12 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(1024), nullable=False)
     cards_created = db.relationship("Card")
 
+    subscribed_to = db.relationship('Deck', secondary='subscriptions', back_populates='subscribers')
+
     def __repr__(self):
         return f'<User: {self.username}>'
+    
+subscriptions_table = db.Table('subscriptions',
+    db.Column('user_id', db.Integer, db.ForeignKey('user_table.id')),
+    db.Column('deck_id', db.Integer, db.ForeignKey('deck_table.id'))
+)
