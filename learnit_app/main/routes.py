@@ -1,9 +1,10 @@
 """Import packages and modules."""
+from datetime import date
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from learnit_app import db
-from learnit_app.main.forms import CardForm, DeckForm
-from learnit_app.models import Card, Deck
+from learnit_app.main.forms import CardForm, DeckForm, TrueFalseForm, TextForm
+from learnit_app.models import Card, Deck, AnswerTypes, StudiedCards
 
 main = Blueprint("main", __name__)
 
@@ -80,16 +81,30 @@ def create_deck():
 @login_required
 def deck_detail(deck_id):
     deck = Deck.query.get(deck_id)
-    form = DeckForm(obj=deck)
+    cards = deck.cards
+    forms = {}
+    for card in cards:
+        if card.answer_type == AnswerTypes.TRUEFALSE:
+            forms[card.id] = TrueFalseForm()
+        else:
+            forms[card.id] = TextForm()
 
-    if form.validate_on_submit():
-        new_deck = Deck(
-            name = form.name.data
-        )
-        db.session.add(new_deck)
-        db.session.commit()
+    for card, form in forms.items():
+        if form.validate_on_submit():
+            this_card = Card.query.get(card)
+            if this_card.correct_answer == form.input.data:
+                studied = StudiedCards()
+                studied.date_sutdied = date.today()
+                studied.card = this_card
+                user = current_user
+                user.studied.append(studied)
+                db.session.add(user)
+                db.session.commit()
+                print('Correct!')
 
-        flash('Deck updated')
+            else:
+                print("Incorrect")
+                flash("Incorrect answer, try again!")
 
-    return render_template('deck.html', deck=deck, form=form)
+    return render_template('deck.html', deck=deck, forms=forms)
 

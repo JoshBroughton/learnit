@@ -16,6 +16,7 @@ class AnswerTypes(FormEnum):
     TEXTINPUT = 'Text Input'
 
 class Card(db.Model):
+    __tablename__ = "card_table"
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey("user_table.id"))
     deck_id = db.Column(db.Integer, db.ForeignKey("deck_table.id"), nullable=True)
@@ -24,6 +25,7 @@ class Card(db.Model):
     answer_type = db.Column(db.Enum(AnswerTypes))
     correct_answer = db.Column(db.String(100), nullable=False)
     explanation = db.Column(db.String(1000), nullable=True)
+
 
 class Deck(db.Model):
     __tablename__ = "deck_table"
@@ -43,9 +45,18 @@ class User(UserMixin, db.Model):
     cards_created = db.relationship("Card")
 
     subscribed_to = db.relationship('Deck', secondary='subscriptions', back_populates='subscribers')
+    studied = db.relationship('StudiedCards')
 
     def __repr__(self):
         return f'<User: {self.username}>'
+    
+class StudiedCards(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.ForeignKey('user_table.id'))
+    card_id = db.Column(db.ForeignKey('card_table.id'))
+    date_sutdied = db.Column(db.Date)
+    card = db.relationship('Card')
+
     
 subscriptions_table = db.Table('subscriptions',
     db.Column('user_id', db.Integer, db.ForeignKey('user_table.id')),

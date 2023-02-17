@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from learnit_app import db
-from wtforms import TextAreaField, SelectField, StringField, SubmitField
+from wtforms import TextAreaField, SelectField, StringField, SubmitField, RadioField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, Length, ValidationError
 from learnit_app.models import AnswerTypes, Deck
@@ -16,6 +16,7 @@ class CardForm(FlaskForm):
     explanation = TextAreaField('Explanation', validators=[DataRequired(), Length(max=1000)])
     submit = SubmitField('Submit')
 
+
 class DeckForm(FlaskForm):
     name = StringField('Deck Name', validators=[DataRequired(), Length(max=50)])
     submit = SubmitField('Submit')
@@ -24,3 +25,13 @@ class DeckForm(FlaskForm):
         result = Deck.query.filter_by(name=field.data).one_or_none()
         if result is not None:
             raise ValidationError('A deck with this name already exists')
+
+
+class TrueFalseForm(FlaskForm):
+    input = RadioField('True or False', choices=['True', 'False'])
+    submit = SubmitField('Submit')
+
+
+class TextForm(FlaskForm):
+    input = StringField('Enter the correct answer:', validators=[Length(max=100)])
+    submit = SubmitField('Submit')
