@@ -14,7 +14,8 @@ main = Blueprint("main", __name__)
 
 @main.route('/')
 def homepage():
-    return render_template('home.html')
+    decks = Deck.query.all()
+    return render_template('home.html', decks=decks)
 
 @main.route('/create_card', methods=['GET', 'POST'])
 @login_required
@@ -83,28 +84,55 @@ def deck_detail(deck_id):
     deck = Deck.query.get(deck_id)
     cards = deck.cards
     forms = {}
+    user = current_user
+
     for card in cards:
         if card.answer_type == AnswerTypes.TRUEFALSE:
-            forms[card.id] = TrueFalseForm()
+            forms[f'{card.id}'] = TrueFalseForm(prefix=f'{card.id}')
         else:
-            forms[card.id] = TextForm()
+            forms[f'{card.id}'] = TextForm(prefix=f'{card.id}')
 
     for card, form in forms.items():
-        if form.validate_on_submit():
-            this_card = Card.query.get(card)
+        if form.validate_on_submit() and form.submit.data:
+            print(form.input.data)
+            print(card)
+            this_card = Card.query.get(int(card))
+            print(this_card.correct_answer)
             if this_card.correct_answer == form.input.data:
-                studied = StudiedCards()
-                studied.date_sutdied = date.today()
-                studied.card = this_card
-                user = current_user
+                studied = StudiedCards(
+                    card_id = this_card.id,
+                    user_id = user.id,
+                    date_studied = date.today(),
+                    card = this_card
+                )
                 user.studied.append(studied)
                 db.session.add(user)
                 db.session.commit()
                 print('Correct!')
-
             else:
                 print("Incorrect")
                 flash("Incorrect answer, try again!")
+    
+    studied_cards = [card.card_id for card in user.studied]
+    print(studied_cards)
+    return render_template('deck.html', deck=deck, forms=forms, studied_cards=studied_cards)
 
-    return render_template('deck.html', deck=deck, forms=forms)
+@main.route('/decks/<deck_id>/cards', methods=['GET', 'POST'])
+@login_required
+def deck_list_all_cards(deck_id):
+    deck = Deck.query.get(deck_id)
+    cards = deck.cards
+    return render_template('deck_all_cards.html', cards=cards)
 
+@main.route('/decks/<deck_id>/reset', methods=['POST'])
+@login_required
+def reset_deck(deck_id):
+    deck = Deck.query.get(deck_id)
+    user = current_user
+    studied_cards = [card.card_id for card in user.studied]
+    for card in deck.cards:
+        if card.id in studied_cards:
+            StudiedCards.query.filter_by(card_id=card.id).delete()
+            db.session.commit()
+            
+    return redirect(url_for('main.homepage'))

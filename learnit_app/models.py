@@ -54,7 +54,8 @@ class StudiedCards(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.ForeignKey('user_table.id'))
     card_id = db.Column(db.ForeignKey('card_table.id'))
-    date_sutdied = db.Column(db.Date)
+    date_studied = db.Column(db.Date)
+    isCorrect = db.Column(db.Boolean)
     card = db.relationship('Card')
 
     

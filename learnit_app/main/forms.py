@@ -28,10 +28,10 @@ class DeckForm(FlaskForm):
 
 
 class TrueFalseForm(FlaskForm):
-    input = RadioField('True or False', choices=['True', 'False'])
+    input = RadioField('True or False', choices=['True', 'False'], validators=[DataRequired('')])
     submit = SubmitField('Submit')
 
 
 class TextForm(FlaskForm):
-    input = StringField('Enter the correct answer:', validators=[Length(max=100)])
+    input = StringField('Enter the correct answer:', validators=[DataRequired(''), Length(max=100)])
     submit = SubmitField('Submit')
