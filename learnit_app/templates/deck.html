@@ -2,15 +2,22 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Deck Details</h1>
-
+<h2>Deck Details</h2>
 <h3> Deck Name </h3>
 <p> {{ deck.name}}</p>
-
-<h3> Cards </h3>
+<a href="/decks/{{ deck.id }}/cards">See all cards</a>
+<form action="/decks/{{ deck.id }}/reset" method="POST">
+  <button name="reset" value="reset">Reset study history for this deck</button>
+</form>
+<h3> Study Cards </h3>
 
 {% for card in deck.cards %}
-  {{ study_card(card, forms[card.id]) }}
+  {% if card.id not in studied_cards %}
+    {{ study_card(card, forms[card.id|string]) }}
+    {% if card.id|string == incorrect %}
+      <p>Sorry, that is incorrect. Explanation: {{ card. explanation }}</p>
+    {% endif %}
+  {% endif %}
 {% endfor %}
 
 {% endblock %}

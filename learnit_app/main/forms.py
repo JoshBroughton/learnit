@@ -12,10 +12,11 @@ class CardForm(FlaskForm):
     deck = QuerySelectField('Deck', query_factory=deck_factory, validators=[DataRequired()])
     prompt = TextAreaField('Card Prompt', validators=[DataRequired(), Length(max=1000)])
     answer_type = SelectField('Answer Type', choices=AnswerTypes.enum_choices())
-    correct_answer = StringField('Correct Answer', validators=[DataRequired(), Length(max=100)])
+    correct_answer = RadioField('Correct Answer', validators=[DataRequired()], choices=["True", "False"])
     explanation = TextAreaField('Explanation', validators=[DataRequired(), Length(max=1000)])
     submit = SubmitField('Submit')
-
+    delete = SubmitField('Delete')
+    
 
 class DeckForm(FlaskForm):
     name = StringField('Deck Name', validators=[DataRequired(), Length(max=50)])
@@ -28,10 +29,10 @@ class DeckForm(FlaskForm):
 
 
 class TrueFalseForm(FlaskForm):
-    input = RadioField('True or False', choices=['True', 'False'])
+    input = RadioField('True or False', choices=['True', 'False'], validators=[DataRequired('')])
     submit = SubmitField('Submit')
 
 
 class TextForm(FlaskForm):
-    input = StringField('Enter the correct answer:', validators=[Length(max=100)])
+    input = StringField('Enter the correct answer:', validators=[DataRequired(''), Length(max=100)])
     submit = SubmitField('Submit')

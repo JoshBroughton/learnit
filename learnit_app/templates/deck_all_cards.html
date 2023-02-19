@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<ul>
+{% for card in cards %}
+  <li><a href="/cards/{{ card.id }}">{{ card.prompt}}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}

@@ -1,7 +1,7 @@
 <form method="POST">
   {{ form.csrf_token }}
   <fieldset>
-    <legend>Enter the card information:</legend>
+    <legend>Enter card information:</legend>
 
     {{ form.deck.label }}
     {{ form.deck }}
@@ -47,7 +47,8 @@
           <li class="error">{{ error }}</li>
       {% endfor %}
     </ul>
-  </fieldset>
 
-  {{ form.submit }}
+    {{ form.submit }}
+    {{ form.delete }}
+  </fieldset>
 </form>
