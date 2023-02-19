@@ -13,7 +13,6 @@ class FormEnum(enum.Enum):
 
 class AnswerTypes(FormEnum):
     TRUEFALSE = 'True or False'
-    TEXTINPUT = 'Text Input'
 
 class Card(db.Model):
     __tablename__ = "card_table"

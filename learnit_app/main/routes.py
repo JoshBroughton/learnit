@@ -45,16 +45,20 @@ def card_detail(card_id):
     card = Card.query.get(card_id)
     form = CardForm(obj=card)
 
+    if form.delete.data:
+        Card.query.filter_by(id=card_id).delete()
+        db.session.commit()
+        return redirect('/')
+
     if form.validate_on_submit():
-        new_card = Card(
-            deck_id = form.deck.data.id,
-            author_id = current_user.id,
-            prompt = form.prompt.data,
-            answer_type = form.answer_type.data,
-            correct_answer = form.correct_answer.data,
-            explanation = form.explanation.data
-        )
-        db.session.add(new_card)
+        card.deck_id = form.deck.data.id,
+        card.author_id = current_user.id,
+        card.prompt = form.prompt.data,
+        card.answer_type = form.answer_type.data,
+        card.correct_answer = form.correct_answer.data,
+        card.explanation = form.explanation.data
+        
+        db.session.add(card)
         db.session.commit()
 
         flash('Card Updated')
@@ -85,6 +89,7 @@ def deck_detail(deck_id):
     cards = deck.cards
     forms = {}
     user = current_user
+    incorrect = None
 
     for card in cards:
         if card.answer_type == AnswerTypes.TRUEFALSE:
@@ -94,10 +99,7 @@ def deck_detail(deck_id):
 
     for card, form in forms.items():
         if form.validate_on_submit() and form.submit.data:
-            print(form.input.data)
-            print(card)
             this_card = Card.query.get(int(card))
-            print(this_card.correct_answer)
             if this_card.correct_answer == form.input.data:
                 studied = StudiedCards(
                     card_id = this_card.id,
@@ -108,14 +110,12 @@ def deck_detail(deck_id):
                 user.studied.append(studied)
                 db.session.add(user)
                 db.session.commit()
-                print('Correct!')
             else:
-                print("Incorrect")
-                flash("Incorrect answer, try again!")
+                incorrect = card
+                print(incorrect)
     
     studied_cards = [card.card_id for card in user.studied]
-    print(studied_cards)
-    return render_template('deck.html', deck=deck, forms=forms, studied_cards=studied_cards)
+    return render_template('deck.html', deck=deck, forms=forms, studied_cards=studied_cards, incorrect=incorrect)
 
 @main.route('/decks/<deck_id>/cards', methods=['GET', 'POST'])
 @login_required
@@ -135,4 +135,4 @@ def reset_deck(deck_id):
             StudiedCards.query.filter_by(card_id=card.id).delete()
             db.session.commit()
             
-    return redirect(url_for('main.homepage'))
+    return redirect(f'/decks/{deck_id}')

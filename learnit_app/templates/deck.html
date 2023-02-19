@@ -14,6 +14,9 @@
 {% for card in deck.cards %}
   {% if card.id not in studied_cards %}
     {{ study_card(card, forms[card.id|string]) }}
+    {% if card.id|string == incorrect %}
+      <p>Sorry, that is incorrect. Explanation: {{ card. explanation }}</p>
+    {% endif %}
   {% endif %}
 {% endfor %}
 
