@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>All Decks</h2>
-{% for deck in decks %}
-<a href="/decks/{{ deck.id }}">{{ deck.name }}</a>
-{% endfor %}
+{% if current_user.is_authenticated %}
+  <h2>All Decks</h2>
+  {% for deck in decks %}
+    <a href="/decks/{{ deck.id }}">{{ deck.name }}</a>
+  {% endfor %}
+{% else %}
+  <h2>Welcome to learnit! Create, share, and study decks of flashcards!</h2>
+{% endif %}
 {% endblock %}
