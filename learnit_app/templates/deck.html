@@ -3,10 +3,9 @@
 {% block content %}
 
 <h2>Deck Details</h2>
-<h3> Deck Name </h3>
-<p> {{ deck.name}}</p>
-<a href="/decks/{{ deck.id }}/cards">See all cards</a>
-<form action="/decks/{{ deck.id }}/reset" method="POST">
+<h3> Deck Name: {{ deck.name}}</h3>
+<a href="/decks/{{ deck.id }}/cards">Click to see a list of all cards in this deck</a>
+<form id="reset" action="/decks/{{ deck.id }}/reset" method="POST">
   <button name="reset" value="reset">Reset study history for this deck</button>
 </form>
 <h3> Study Cards </h3>
