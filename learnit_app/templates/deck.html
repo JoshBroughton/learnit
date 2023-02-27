@@ -10,6 +10,9 @@
     {{ delete_form.delete }}
 </form>
 
+<h4>Update Deck:</h4>
+{% include 'deck_form.html' %}
+
 <a href="/decks/{{ deck.id }}/cards">Click to see a list of all cards in this deck</a>
 <form id="reset" action="/decks/{{ deck.id }}/reset" method="POST">
   <button name="reset" value="reset">Reset study history for this deck</button>
