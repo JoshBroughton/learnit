@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<h4>Delete Deck:</h4>
+<form method="POST">
+  {{ delete_form.csrf_token }}
+    {{ delete_form.delete }}
+</form>
+
+<h4>Update Deck:</h4>
+{% include 'deck_form.html' %}
+
 <ul>
 {% for card in cards %}
   <li><a href="/cards/{{ card.id }}">{{ card.prompt}}</a></li>

@@ -88,26 +88,8 @@ def deck_detail(deck_id):
     deck = Deck.query.get(deck_id)
     cards = deck.cards
     forms = {}
-    form = DeckForm()
-    delete_form = DeleteDeck()
     user = current_user
     incorrect = None
-
-    if delete_form.validate_on_submit():
-        if delete_form.delete.data:
-            Deck.query.filter_by(id=deck_id).delete()
-            db.session.commit()
-            return redirect('/')
-            
-    if form.validate_on_submit():
-        new_deck = Deck(
-            name = form.name.data
-        )
-        db.session.add(new_deck)
-        db.session.commit()
-
-        flash('Deck created')
-        return redirect(f'/decks/{new_deck.id}')
     
     for card in cards:
         if card.answer_type == AnswerTypes.TRUEFALSE:
@@ -133,14 +115,32 @@ def deck_detail(deck_id):
                 print(incorrect)
     
     studied_cards = [card.card_id for card in user.studied]
-    return render_template('deck.html', form=form, deck=deck, forms=forms, studied_cards=studied_cards, incorrect=incorrect, delete_form=delete_form)
+    return render_template('deck.html', deck=deck, forms=forms, studied_cards=studied_cards, incorrect=incorrect)
 
 @main.route('/decks/<deck_id>/cards', methods=['GET', 'POST'])
 @login_required
 def deck_list_all_cards(deck_id):
     deck = Deck.query.get(deck_id)
     cards = deck.cards
-    return render_template('deck_all_cards.html', cards=cards)
+    form = DeckForm()
+    delete_form = DeleteDeck()
+
+    if delete_form.validate_on_submit():
+        if delete_form.delete.data:
+            Deck.query.filter_by(id=deck_id).delete()
+            db.session.commit()
+            return redirect('/')
+            
+    if form.validate_on_submit():
+        deck.name = form.name.data
+        
+        db.session.add(deck)
+        db.session.commit()
+
+        flash('Deck updated')
+        return redirect(f'/decks/{deck.id}/cards')
+    
+    return render_template('deck_all_cards.html', cards=cards, form=form, delete_form=delete_form)
 
 @main.route('/decks/<deck_id>/reset', methods=['POST'])
 @login_required
