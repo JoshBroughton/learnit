@@ -4,6 +4,12 @@
 
 <h2>Deck Details</h2>
 <h3> Deck Name: {{ deck.name}}</h3>
+<h4>Delete Deck:</h4>
+<form method="POST">
+  {{ delete_form.csrf_token }}
+    {{ delete_form.delete }}
+</form>
+
 <a href="/decks/{{ deck.id }}/cards">Click to see a list of all cards in this deck</a>
 <form id="reset" action="/decks/{{ deck.id }}/reset" method="POST">
   <button name="reset" value="reset">Reset study history for this deck</button>

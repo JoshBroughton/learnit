@@ -3,7 +3,7 @@ from datetime import date
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from learnit_app import db
-from learnit_app.main.forms import CardForm, DeckForm, TrueFalseForm, TextForm
+from learnit_app.main.forms import CardForm, DeckForm, TrueFalseForm, TextForm, DeleteDeck
 from learnit_app.models import Card, Deck, AnswerTypes, StudiedCards
 
 main = Blueprint("main", __name__)
@@ -88,8 +88,18 @@ def deck_detail(deck_id):
     deck = Deck.query.get(deck_id)
     cards = deck.cards
     forms = {}
+    delete_form = DeleteDeck()
     user = current_user
     incorrect = None
+
+    if delete_form.validate_on_submit():
+        print('out here')
+        if delete_form.delete.data:
+            print('HEre')
+            Deck.query.filter_by(id=deck_id).delete()
+            db.session.commit()
+            return redirect('/')
+            
 
     for card in cards:
         if card.answer_type == AnswerTypes.TRUEFALSE:
@@ -115,7 +125,7 @@ def deck_detail(deck_id):
                 print(incorrect)
     
     studied_cards = [card.card_id for card in user.studied]
-    return render_template('deck.html', deck=deck, forms=forms, studied_cards=studied_cards, incorrect=incorrect)
+    return render_template('deck.html', deck=deck, forms=forms, studied_cards=studied_cards, incorrect=incorrect, delete_form=delete_form)
 
 @main.route('/decks/<deck_id>/cards', methods=['GET', 'POST'])
 @login_required
