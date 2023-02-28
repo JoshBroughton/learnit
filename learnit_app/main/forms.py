@@ -36,3 +36,6 @@ class TrueFalseForm(FlaskForm):
 class TextForm(FlaskForm):
     input = StringField('Enter the correct answer:', validators=[DataRequired(''), Length(max=100)])
     submit = SubmitField('Submit')
+
+class DeleteDeck(FlaskForm):
+    delete = SubmitField('Delete')

@@ -3,7 +3,7 @@ from datetime import date
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from learnit_app import db
-from learnit_app.main.forms import CardForm, DeckForm, TrueFalseForm, TextForm
+from learnit_app.main.forms import CardForm, DeckForm, TrueFalseForm, TextForm, DeleteDeck
 from learnit_app.models import Card, Deck, AnswerTypes, StudiedCards
 
 main = Blueprint("main", __name__)
@@ -90,7 +90,7 @@ def deck_detail(deck_id):
     forms = {}
     user = current_user
     incorrect = None
-
+    
     for card in cards:
         if card.answer_type == AnswerTypes.TRUEFALSE:
             forms[f'{card.id}'] = TrueFalseForm(prefix=f'{card.id}')
@@ -122,7 +122,25 @@ def deck_detail(deck_id):
 def deck_list_all_cards(deck_id):
     deck = Deck.query.get(deck_id)
     cards = deck.cards
-    return render_template('deck_all_cards.html', cards=cards)
+    form = DeckForm()
+    delete_form = DeleteDeck()
+
+    if delete_form.validate_on_submit():
+        if delete_form.delete.data:
+            Deck.query.filter_by(id=deck_id).delete()
+            db.session.commit()
+            return redirect('/')
+            
+    if form.validate_on_submit():
+        deck.name = form.name.data
+        
+        db.session.add(deck)
+        db.session.commit()
+
+        flash('Deck updated')
+        return redirect(f'/decks/{deck.id}/cards')
+    
+    return render_template('deck_all_cards.html', cards=cards, form=form, delete_form=delete_form)
 
 @main.route('/decks/<deck_id>/reset', methods=['POST'])
 @login_required
