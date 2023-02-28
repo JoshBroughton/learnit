@@ -54,7 +54,6 @@ def card_detail(card_id):
         card.deck_id = form.deck.data.id,
         card.author_id = current_user.id,
         card.prompt = form.prompt.data,
-        card.answer_type = form.answer_type.data,
         card.correct_answer = form.correct_answer.data,
         card.explanation = form.explanation.data
         
