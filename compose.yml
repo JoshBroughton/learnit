@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    user: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    stop_signal: SIGINT
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://postgres@postgres:5432
+
