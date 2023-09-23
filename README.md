@@ -14,3 +14,5 @@ The project uses the Flask framework coupled with WTForms and SQLAlchemy.
 
 You can run this app locally by running `docker compose up` from the root directory of the repository.
 Access the running app at `localhost:5000`
+
+
